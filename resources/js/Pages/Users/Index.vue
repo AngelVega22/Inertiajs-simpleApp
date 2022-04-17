@@ -2,7 +2,12 @@
   <Head title="Usuarios" />
 
   <div class="flex justify-between mb-10">
-    <h1 class="text-3xl">Usuarios</h1>
+    <div class="flex items-center">
+      <h1 class="text-3xl">Usuarios</h1>
+      <Link href="/usuarios/crear" class="text-blue-500 text-sm ml-4"
+        >Nuevo usuario</Link
+      >
+    </div>
     <input
       v-model="search"
       type="text"
@@ -62,10 +67,11 @@
 </template>
 
 <script setup>
-import Pagination from "../Shared/Pagination.vue";
+import Pagination from "../../Shared/Pagination.vue";
 import { ref, watch } from "vue";
 import { Inertia } from "@inertiajs/inertia";
-
+import throttle from "lodash/throttle";
+//or debounce
 let props = defineProps({
   users: Object,
   filters: Object,
@@ -73,16 +79,20 @@ let props = defineProps({
 
 let search = ref(props.filters.search);
 
-watch(search, (value) => {
-  Inertia.get(
-    "/usuarios",
-    { search: value },
-    {
-      preserveState: true,
-      replace: true,
-    }
-  );
-});
+watch(
+  search,
+  throttle(function (value) {
+    // console.log("triggered");
+    Inertia.get(
+      "/usuarios",
+      { search: value },
+      {
+        preserveState: true,
+        replace: true,
+      }
+    );
+  }, 500)
+);
 </script>
 
 <style>

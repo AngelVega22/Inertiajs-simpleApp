@@ -551,13 +551,23 @@ var map = {
 		"./resources/js/Pages/Inicio.vue",
 		"resources_js_Pages_Inicio_vue"
 	],
-	"./Users": [
-		"./resources/js/Pages/Users.vue",
-		"resources_js_Pages_Users_vue"
+	"./Users/Create": [
+		"./resources/js/Pages/Users/Create.vue",
+		"resources_js_Pages_Users_Create_vue"
 	],
-	"./Users.vue": [
-		"./resources/js/Pages/Users.vue",
-		"resources_js_Pages_Users_vue"
+	"./Users/Create.vue": [
+		"./resources/js/Pages/Users/Create.vue",
+		"resources_js_Pages_Users_Create_vue"
+	],
+	"./Users/Index": [
+		"./resources/js/Pages/Users/Index.vue",
+		"/js/vendor",
+		"resources_js_Pages_Users_Index_vue"
+	],
+	"./Users/Index.vue": [
+		"./resources/js/Pages/Users/Index.vue",
+		"/js/vendor",
+		"resources_js_Pages_Users_Index_vue"
 	]
 };
 function webpackAsyncContext(req) {
@@ -570,7 +580,7 @@ function webpackAsyncContext(req) {
 	}
 
 	var ids = map[req], id = ids[0];
-	return __webpack_require__.e(ids[1]).then(() => {
+	return Promise.all(ids.slice(1).map(__webpack_require__.e)).then(() => {
 		return __webpack_require__(id);
 	});
 }
