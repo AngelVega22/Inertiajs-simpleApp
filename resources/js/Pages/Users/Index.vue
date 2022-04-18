@@ -4,7 +4,10 @@
   <div class="flex justify-between mb-10">
     <div class="flex items-center">
       <h1 class="text-3xl">Usuarios</h1>
-      <Link href="/usuarios/crear" class="text-blue-500 text-sm ml-4"
+      <Link
+        v-if="can.createUser"
+        href="/usuarios/crear"
+        class="text-blue-500 text-sm ml-4"
         >Nuevo usuario</Link
       >
     </div>
@@ -51,7 +54,7 @@
           <td class="px-6 py-4">
             {{ user.email }}
           </td>
-          <td class="px-6 py-4">
+          <td v-if="user.can.edit" class="px-6 py-4">
             <Link
               :href="`/users/${user.id}/edit`"
               class="text-indigo-600 hover:text-indigo-900"
@@ -75,6 +78,7 @@ import throttle from "lodash/throttle";
 let props = defineProps({
   users: Object,
   filters: Object,
+  can: Object,
 });
 
 let search = ref(props.filters.search);

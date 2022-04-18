@@ -19,6 +19,9 @@
           Configuración
         </NavLink>
       </li>
+      <li>
+        <NavLink href="/logout" method="POST"> Logout </NavLink>
+      </li>
     </ul>
   </nav>
 </template>

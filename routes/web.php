@@ -1,7 +1,14 @@
 <?php
-
+use App\Http\Controllers\Auth\LoginController;
+use App\Models\User;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+
+Route::get('login' ,[LoginController::class,'create']) ->name('login');
+Route::post('login' ,[LoginController::class,'store']);
+Route::post('logout' , [LoginController::class,'destroy'])->middleware('auth');
+Route::middleware('auth')->group(function () {
+
 
 /*
 |--------------------------------------------------------------------------
@@ -22,7 +29,7 @@ Route::get('/usuarios', function () {
     // sleep(2);
 
     return Inertia::render('Users/Index',[
-        'users' =>  App\Models\User::query()
+        'users' =>  User::query()
         ->when(Request::input('search'), function ($query, $search){
             $query -> where('name', 'like', "%{$search}%");
         })
@@ -31,17 +38,24 @@ Route::get('/usuarios', function () {
          ->through(fn($user) => [
             'id' => $user -> id ,
             'name' => $user ->name,
-            'email' => $user -> email
+            'email' => $user -> email,
+            'can' => [
+                'edit' => Auth::user()->can('edit',$user)
+            ]
          ]),
-         'filters' => Request::only(['search'])
+         'filters' => Request::only(['search']),
+         'can' => [
+             'createUser' =>Auth::user()-> can('create',User::class)
+         ]
     ]);
 
 });
 
 Route::get('/usuarios/crear', function () {
     return Inertia::render('Users/Create');
-});
-
+})
+// ->middleware('can:create,App\Models\User');
+->can('create', 'App\Models\User');
 Route::post('/usuarios', function () {
   $attributes =  Request::validate([
         'name' => 'required',
@@ -49,7 +63,7 @@ Route::post('/usuarios', function () {
         'password' => 'required'
     ]);
 
-    App\Models\User::create($attributes);
+    User::create($attributes);
 
     return redirect('/usuarios');
 });
@@ -60,6 +74,5 @@ Route::get('/configuracion', function () {
 });
 
 
-Route::post('/logout', function () {
-dd(request('foo'));
+
 });
